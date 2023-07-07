@@ -1,0 +1,194 @@
+
+
+
+A. (6 points) Ordinary least-squares fit by QR-decomposition
+
+
+
+A.1 
+Make sure that your QR-decomposition works for tall matrices. 
+
+
+The QR-decomposition function has been shown to work in the "Homework1" assignment folder.
+However, for completion this is also shown here:
+
+Operation on a randomly generated real tall matrix (7,5) A with the "decomp" function, should
+yield an Orthogonal matrix Q such that Q*Q^T = 1 and an upper triangular matrix R:
+
+A = 
+( 95   75   75   69   72  )
+
+( 29   38   45   21   96  )
+
+( 65   27   50   67   98  )
+
+( 27   6   19   94   18  )
+
+( 14   30   68   52   67  )
+
+( 95   53   88   30   13  )
+
+( 87   8   31   23   13  )
+
+
+The decomp(A) function is run and we get
+Q = 
+( 0.534332213391292   0.459607596664122   -0.548421616197516   0.174854912633747   -0.146543295481666  )
+
+( 0.16311193882471   0.407039515171407   -0.0167447193619692   -0.082681545389895   0.563915646440286  )
+
+( 0.365595724951936   -0.114915166880542   0.155146737104208   0.264875546046867   0.563367335273453  )
+
+( 0.15186283959542   -0.139830538130011   0.14466535796953   0.82411508672381   -0.307184449438449  )
+
+( 0.0787436946050325   0.402316208805617   0.767217776252979   0.0642152501705023   -0.00342972648247059  )
+
+( 0.534332213391292   0.0711177429801279   0.251514645005233   -0.428699502983156   -0.471692432261594  )
+
+( 0.48933581647413   -0.650696204054113   0.0455196285088653   -0.159241729166384   0.162091493122527  )
+
+and
+R = 
+( 177.792013318934   91.6520359706432   136.125349773643   110.443656233173   111.27608957614  )
+
+( 0   56.6295356014504   57.829090619381   27.5053296772581   77.8095703716532  )
+
+( 0   0   44.3360510999672   34.2883595819037   31.9795438193267  )
+
+( 0   0   0   92.3578044042635   42.103186169301  )
+
+( 0   0   0   0   89.0108596673604  )
+
+
+R is easily seen to be upper triangular and we find that Q*Q^T = 1: (within reasonable error)
+
+Q^T*Q = 
+( 1   -8.32667268468867E-16   -7.45931094670027E-16   -3.19189119579733E-16   7.7715611723761E-16  )
+
+( -8.32667268468867E-16   1   -1.28369537222284E-16   0   -1.38777878078145E-16  )
+
+( -7.45931094670027E-16   -1.28369537222284E-16   1   3.98986399474666E-17   9.54097911787244E-17  )
+
+( -3.19189119579733E-16   0   3.98986399474666E-17   1   -1.83880688453542E-16  )
+
+( 7.7715611723761E-16   -1.38777878078145E-16   9.54097911787244E-17   -1.83880688453542E-16   1  )
+
+
+Q and R must also satisfy the equality Q*R = A in order to be the uniqe decomposition and we
+find
+
+Q*R = 
+( 95   75   75   69   72  )
+
+( 29   38   45   21   96  )
+
+( 65   27   50   67   98  )
+
+( 27   6   19   94   18  )
+
+( 14   30   68   52   67  )
+
+( 95   53   88   30   13  )
+
+( 87   8   31   23   13  )
+
+
+I conclude that the "decomp" implementation works as intended.
+
+
+
+A.2 
+Implement a routine that makes a least-squares fit—using your QR-decomposition routines—of 
+a given data-set of the form (x_i, y_i, dy_i) from i = 1 to n, with a linear combination 
+F_c(x) = Sum(c_k * f_k(x)) from k = 1 to m of some given functions f_k. The routine takes 
+as arguments the data to fit (x_i, y_i, dy_i) and the set of functions (f_k), the linear 
+combination of which should fit the data. The routines must calculate and return the vector 
+of the best fit coefficients.
+
+
+A routine that makes a least-squares fit—using the above QR-decomposition has been made and
+can be found as the function "lsfit" in "OLSF.cs".
+
+
+
+A.3 
+The law of radioactive decay. In 1902 Rutherford and Soddy measured the radioactivity of 
+the (then not well explored) element, called ThX at the time, and obtained the following 
+results:
+
+Time t (days)			  	: 1, 2, 3, 4, 6, 9, 10, 13, 15
+Activity y of ThX (relative units)	: 117, 100, 88, 72, 53, 29.5, 25.2, 15.2, 11.1
+
+From this data they correctly deduced that radioactive decay follows exponentil law 
+
+				y(t) = a*e^(-lambda*t)
+
+Now, assume that the uncertainty dy of the measurement was determined by the last-but-one 
+digit of the measurement
+
+dy (relative units)			 : 5, 5, 5, 4, 4, 3, 3, 2, 2
+
+and fit the data with exponential function in the usual logarithmic way,
+				
+				ln(y) = ln(a)-lambda*t
+
+Plot the experimental data (with error-bars) and your best fit. From your fit find out the 
+half-life time of ThX. ThX is known today as ^224Ra. Compare your results with the modern
+value.
+
+
+For this problem there are no requirements on how the main should handle the data (from-to
+.txt file or from command line to .txt file), i have thus simply hard-coded it into the main.
+
+The data is prepared according to the usual logarithmic way: 
+
+			(x_i, z_i, dz_i) = (x_i ln(y_i), dy_i/y_i), 
+
+with the functions f_0(x) = 1 and f_1(x) = x making the fitting function 
+
+				f_c(x) = c_0 + c_1*x,
+
+matching the hypothesis of an exponential decay law. The errors dz_i are calculated using
+error propagation: dz_i ~= |(dz/dy)|*dy_i.
+
+The function lsfit(fs, x, y, dy) is run and the c's are returned:
+
+c = 
+(4.9511553496486)
+(-0.169887082001008)
+
+The data together with the least-squares solution are plotted together in "ls_sol.svg"
+The halftime is now found using lambda = -c[1]:
+
+4.08004641904341
+
+This corresponds somewhat with the modern value of 3.6319 days. (wikipedia.org/wiki/Radium)
+
+
+
+B. (3 points) Uncertainties of the fitting coefficients
+
+
+
+B.1
+Modify your lsfit function, such that it also calculates the covariance matrix and the
+uncertainties of the fitting coefficients.
+
+The c+dc and c-dc solutions have been plotted together with the c solution and data in
+"ls_cov_sol.svg"
+
+
+
+B.2
+Calculate the uncertainty in the half-life value for ThX from the given data. This is simply
+given as dT_(1/2) = |d T_(1/2)/d lambda|*dlambda = |ln(2)/lambda/lambda|*dlambda = 
+|ln(2)/c[1]/c[1]|*Sqrt(S[1,1]), where S is the covariance matrix.
+
+0.166914715082983
+
+
+B.3
+The modern half-life value is found to be below even the lower bound of the interval:
+
+ t - dt = 3.91313170396043		to		t + dt = 4.24696113412639
+

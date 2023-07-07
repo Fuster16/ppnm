@@ -1,0 +1,59 @@
+
+
+
+A. (6 points) 
+Quasi-Newton method with numerical gradient, back-tracking linesearch, and rank-1 update.
+
+
+
+A.1
+
+Implement the quasi-Newton minimization method with numerical gradient, back-tracking 
+linesearch, and a rank-1 update. Start with the unity inverse Hessian matrix and then apply 
+the updates. If the update diverges or the linesearch fails reset the inverse Hessian 
+matrix to unity and continue.
+
+The Quasi-Newton method have been implementet and can be found in the "minimize.cs" file.
+Due to failure and problems in the Homework8 programs, nothing fancy has been made in this
+Homework. The only auxillary function in the "minimize.cs" is the "grad", a numerical 
+gradient function.
+
+
+
+A.2
+
+Find a minimum of the Rosenbrock's valley function: f(x,y)=(1-x)^2+100(y-x^2)^2
+Find a minimum of the Himmelblau's function: f(x,y)=(x^2+y-11)2+(x+y^2-7)^2
+Record the number of steps it takes for the algorithm to reach the minimum.
+
+This has been done. Two minima has been found for each function. 
+
+For the Rosenbrock: R1 = {0}
+
+and R2 = {1} (I thought there were a minimum at (0,0), but low and behold!)
+
+For the Himmelblau: H1 = {2}
+
+and H2 = {3}
+
+The last indice of the solutions vectors above are the steps it take to reach minimum! 
+(If you set "count = true" it simply extends (creates new vector of size + 1 and fills) the 
+solution vector by one indice and adds the step count)
+
+These are checked to indeed be minima by a separate cas tool (wolfram alpha)
+
+
+B. (3 points) Higgs Discovery
+
+Fit the given data-set to the Breit-Wigner function: F(E|m,Γ,A) = A/[(E - m)^2 + Γ^2/4]
+This should be fitted by minimization of the deviation function. 
+
+This i have done. The fit together with the data can be found at "HiggsFit.svg"
+
+The fit parameters where found to be:
+
+(m,Γ,A) = {4}
+
+C. (1 point) Simplex
+
+I have implemented it for use in Homework10 B due to it's stability.

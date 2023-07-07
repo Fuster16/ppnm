@@ -1,0 +1,127 @@
+
+
+
+A. (6 points) Embedded Runge-Kutta ODE integrator
+
+
+
+A.1 Implement an embedded Runge-Kutta stepper rkstepXY (where XY describes the order of the 
+imbedded method used, for example XY=12—"one-two"—for the midpoint-Euler method) of your 
+choice, which advances the solution to the equation dy/dt = X(t,y) (where y and X generally
+are vectors) by a given stepsize h, and estimates the error.
+
+The Runge-Kutta step12 have been implemented and documentet. This can be found as "rkstep12"
+or "rkstepXY" (if no additional coefficients are given) in the "ODE.cs" file.
+
+
+
+A.2 Implement an adaptive-step-size driver routine wchich advances the solution from a to b 
+(by calling your rkstepXY routine with appropriate step-sizes) keeping the specified 
+relative, eps, and absolute, acc, precision. You driver should record the solution in two 
+generic lists, "genlist<double> x" and "genlist<vector> y" and then return the two lists.
+
+An adaptive-step-size driver "driver12" for the "rkstep12" has been implemented and can also
+be found in the "ODE.cs" file. Similarily a "driverXY" for the "rkstepXY".
+
+
+
+A.3 Debug your routines by solving some interesting systems of ordinary differential 
+equations, for example u'' = -u .
+
+Any k'th order ODE can be rewritten as first order ODE's, where the solution is a vector of
+lenght k. For the example in the case of u'' = -u we consider the associated first-order
+ODE dy/dt = X(t,y), with 
+
+				y = (y_1, y_2) = (u, u')
+
+and 
+
+			    dy/dt = X(t,y) = (u', u'') = (u',-u)
+
+Thus, if we let u'' = Y(t,u,u') be a general second order ODE, it's associated first order 
+is always given on the form 
+
+		y = (u,u')	and 	dy/dt = (u', Y(t,u,u'))
+
+The integration routine solution for the initial condition (0,1) can be found (together with
+ it's derivative) plotted in "Harmonic12.svg" together with it's corresponding analytic 
+solution y(t) = (sin(t), cos(t)). An alternate phase-plot can also be found at 
+"SHM_Phase12.svg". 
+
+The problem have also been solved with the coefficients:
+
+{0}
+
+
+Namely the RKF45 Butcher's tableau. The corresponding RKF45 integration routine solution for 
+the initial condition (0,1) can be found in "Harmonic45.svg" and "SHM_Phase45.svg". These
+are plotted together with the analtic solution.
+
+
+A.4 Reproduce (with your routines) the example from the "scipy.integrate.odeint manual" 
+(oscillator with friction)
+
+The example ODE from "scipy.integrate.odeint manual" is given by
+
+			x'' + b*x' + c*sin(x) = 0
+
+The associated first-order differential equation is then given by
+
+		y = (x,x')	and 	X(t,x,x') = (x', Y) = (x', -(bx' + c*sin(x)) )
+
+This is solved for b = 0.25 and c = 5.0 together with the initial condition 
+			
+			y(0) = (Math.pi-0.1,0)
+
+The RKF45 integration routine solution can be found plotted together with it's derivative 
+like in the scipy manual in "Damped45.svg".
+
+
+
+B (3 points) Driver improvements
+
+
+
+B.1 modify the interface to your driver such that the driver records the path only if the 
+user provides initialized generic lists for both "x" and "y". Otherwise, that is, if the 
+lists are "null", the driver only returns the "y" at the end-point
+
+A function "driver" has been made in "ODE.cs" which fullfills the above. It is simply a 
+copy of the "driverXY" function, however it outputs a vector instead of (xlist, ylist)
+, but will fill pre-initialized (generic)lists if they are given as arguments to "driver".
+
+
+B.2 Change the step acceptence condition: investigate the tolerance/error ratio separately 
+for every component of the vector y and pick the smallest.
+
+The function "driver" in "ODE.cs" has been changed according to the requirements of B.2
+
+
+
+B.3 Consider the equation of equatorial motion (in certain units) of a planet around a star 
+in General Relativity.
+
+			u''(φ) + u(φ) = 1 + ε*u(φ)^2
+
+where u(φ) = 1/r(φ), r is the (reduced-circumference) radial coordinate, φ is the azimuthal 
+angle, ε is the relativistic correction (on the order of the star's Schwarzschild radius 
+divided by the radius of the planet's orbit), and primes denote the derivative with respect 
+to φ.
+
+The above second order ODE is easily rearranged to standard form:
+
+			u''(φ) = 1 - u(φ) + ε*u(φ)^2
+
+This can now directly be used as seen in "equatorial.cs".
+
+1. Integrate this equation with ε=0 and initial conditions u(0)=1, u'(0)=0 : this should 
+give a Newtonian circular motion.
+
+2. Integrate this equation with ε=0 and initial conditions u(0)=1, u'(0)≈-0.5 : this should 
+give a Newtonian elliptical motion
+
+3. Integrate this equation with ε≈0.01 and initial conditions u(0)=1, u'(0)≈-0.5 : this 
+should illustrate the relativistic precession of a planetary orbit
+
+The above integration routine solutions can be found in "EquatorialMotion1.svg",
+"EquatorialMotion2.svg" and "EquatorialMotion3.svg". Each corresponding to the parts above.

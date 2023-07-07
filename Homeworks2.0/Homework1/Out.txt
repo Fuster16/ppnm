@@ -1,0 +1,193 @@
+
+
+
+A. (6 points) Solving linear equations using QR-decomposition by modified Gram-Schmidt 
+orthogonalization
+
+Implement a static class "QRGS" with functions "decomp", "solve", and "det". The function 
+"decomp" should perform stabilized Gram-Schmidt orthogonalization of an n×m (where n≥m) 
+matrix A and calculate R. The function/method "solve" should use the matrices Q and R from 
+"decomp" and solve the equation QRx=b for the given right-hand-side "b". The 
+function "det" should return the determinant of matrix R which is equal to the 
+determinant of the original matrix. Determinant of a triangular matrix is given by the 
+product of its diagonal elements.
+
+The functions "decomp", "solve", and "det" can be found in "QRGS.cs". 
+
+Operation on a randomly generated real tall matrix (7,5) A with the "decomp" function, should
+yield an Orthogonal matrix Q such that Q*Q^T = 1 and an upper triangular matrix R:
+
+A = 
+( 95   75   75   69   72  )
+
+( 29   38   45   21   96  )
+
+( 65   27   50   67   98  )
+
+( 27   6   19   94   18  )
+
+( 14   30   68   52   67  )
+
+( 95   53   88   30   13  )
+
+( 87   8   31   23   13  )
+
+
+The decomp(A) function is run and we get
+Q = 
+( 0.534332213391292   0.459607596664122   -0.548421616197516   0.174854912633747   -0.146543295481666  )
+
+( 0.16311193882471   0.407039515171407   -0.0167447193619692   -0.082681545389895   0.563915646440286  )
+
+( 0.365595724951936   -0.114915166880542   0.155146737104208   0.264875546046867   0.563367335273453  )
+
+( 0.15186283959542   -0.139830538130011   0.14466535796953   0.82411508672381   -0.307184449438449  )
+
+( 0.0787436946050325   0.402316208805617   0.767217776252979   0.0642152501705023   -0.00342972648247059  )
+
+( 0.534332213391292   0.0711177429801279   0.251514645005233   -0.428699502983156   -0.471692432261594  )
+
+( 0.48933581647413   -0.650696204054113   0.0455196285088653   -0.159241729166384   0.162091493122527  )
+
+and
+R = 
+( 177.792013318934   91.6520359706432   136.125349773643   110.443656233173   111.27608957614  )
+
+( 0   56.6295356014504   57.829090619381   27.5053296772581   77.8095703716532  )
+
+( 0   0   44.3360510999672   34.2883595819037   31.9795438193267  )
+
+( 0   0   0   92.3578044042635   42.103186169301  )
+
+( 0   0   0   0   89.0108596673604  )
+
+
+R is easily seen to be upper triangular and we find that Q*Q^T = 1: (within reasonable error)
+
+Q^T*Q = 
+( 1   -8.32667268468867E-16   -7.45931094670027E-16   -3.19189119579733E-16   7.7715611723761E-16  )
+
+( -8.32667268468867E-16   1   -1.28369537222284E-16   0   -1.38777878078145E-16  )
+
+( -7.45931094670027E-16   -1.28369537222284E-16   1   3.98986399474666E-17   9.54097911787244E-17  )
+
+( -3.19189119579733E-16   0   3.98986399474666E-17   1   -1.83880688453542E-16  )
+
+( 7.7715611723761E-16   -1.38777878078145E-16   9.54097911787244E-17   -1.83880688453542E-16   1  )
+
+
+Q and R must also satisfy the equality Q*R = A in order to be the uniqe decomposition and we
+find
+
+Q*R = 
+( 95   75   75   69   72  )
+
+( 29   38   45   21   96  )
+
+( 65   27   50   67   98  )
+
+( 27   6   19   94   18  )
+
+( 14   30   68   52   67  )
+
+( 95   53   88   30   13  )
+
+( 87   8   31   23   13  )
+
+
+I conclude that the "decomp" implementation works as intended.
+
+Operation on a randomly generated real square matrix (5,5) M with the "decomp" function,
+followed by the "solve" function on it's associated Q,R matrices and a randomly generated
+vector b, should solve the linear equation Ax=b:
+
+M = 
+( 95   75   75   69   72  )
+
+( 29   38   45   21   96  )
+
+( 65   27   50   67   98  )
+
+( 27   6   19   94   18  )
+
+( 14   30   68   52   67  )
+
+and
+b = 
+(95)
+(75)
+(75)
+(69)
+(72)
+
+The solve(Q,R,b) function is run and we get the solution vector
+
+x = 
+(-0.616761469847705)
+(1.33286197865321)
+(-0.550839893638289)
+(0.838907817306098)
+(0.514667275906838)
+
+By application of M on x we should regain b:
+
+M*x = 
+(95)
+(75)
+(75)
+(69)
+(72)
+
+I conclude that the "solve" implementation works as intended.
+
+
+
+B (3 points) Matrix inverse by Gram-Schmidt QR factorization
+
+Add the function "inverse" to the "QRGS" class that, using the calculated Q and R, should
+calculate the inverse of the matrix A and return it. 
+
+Operation on a randomly generated real square matrix (5,5) A with the "decomp" function,
+followed by the "inverse" function on it's associated Q,R matrices should yield the inverse:
+
+A = 
+( 95   75   75   69   72  )
+
+( 29   38   45   21   96  )
+
+( 65   27   50   67   98  )
+
+( 27   6   19   94   18  )
+
+( 14   30   68   52   67  )
+
+
+The Inverse(Q,R) is run and we get a new matrix B
+
+B = 
+( 0.00589822845428243   -0.0215216536495841   0.0228547872310793   -0.0127688950570325   -0.00550033934279772  )
+
+( 0.0127305626989415   0.0394575553750479   -0.0410408540014579   0.0196481486438441   -0.0154655046832046  )
+
+( 0.00122017273433225   -0.0342260803018733   0.0157966690818987   -0.021295123383622   0.0303446257162245  )
+
+( -0.00139621643320516   0.00757766417548505   -0.00783710898097813   0.0169034082734889   -0.00243511711108564  )
+
+( -0.00708747120501679   0.0156852449738045   0.00365096669030419   0.00236434673653738   -0.00590803832285825  )
+
+
+For B to be the inverse we need A*B = 1:
+
+A*B = 
+( 1   0   1.11022302462516E-16   -1.38777878078145E-16   -2.77555756156289E-16  )
+
+( -2.22044604925031E-16   1   -1.11022302462516E-16   5.55111512312578E-17   -1.11022302462516E-16  )
+
+( 3.33066907387547E-16   -4.44089209850063E-16   1   8.32667268468867E-17   -3.33066907387547E-16  )
+
+( -8.32667268468867E-17   0   -2.22044604925031E-16   1   1.38777878078145E-16  )
+
+( -2.77555756156289E-16   2.22044604925031E-16   -1.66533453693773E-16   3.33066907387547E-16   1  )
+
+
+I conclude that the "inverse" implementation works as intended.

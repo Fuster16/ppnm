@@ -1,0 +1,49 @@
+
+
+
+A. (6 points) Linear Spline (Linear interpolation)
+
+
+
+A.1
+Implement a function that makes linear spline interpolation from a table (x[i], y[i]) at a
+given point z. 
+
+The linear spline interpolation function "linterp" can be found in the "Spline.cs" file.
+I have taken some creative liberty and made the function take "double[] z" instead of 
+"double z". The function assumes that z is ordered and thus only need 1 binsearch instead 
+of O(z.Length). 
+
+
+A.2
+Implement a function that calculates the intergral of the linear spline from the point x[0] 
+to the given point z. The integral must be calculated analytically as it is the integral of 
+a linear function.
+
+The linear spline interpolation integrator function "linterpInteg" can also be found in
+the "Spline.cs" file. Yet again i have made such that the function takes "double[] z".
+This function also assumes z to be ordered, and is structured such that each interval only
+need to be integrated once --> all intervals before the interval where z[i] lies in are 
+integrated over and their values passed to z[j] with j>i. Thus, when the integral fo z[i+1] 
+need to be calculated, we don't need to calculate all intervals before z[i] again.
+
+
+
+A.3
+Make some indicative plots to prove that your linear spline and your integrator works.
+
+The "linSpline.svg" illustrates the implementation of the linear spline interpolation 
+together with it's associated integration routine. I conclude that they work as intended.
+
+
+
+B. (3 points) Quadratic spline
+Implement quadratic spline with derivative and integral.
+
+The quadratic spline has been implemented as "qinterp" in "spline.cs" together with 
+functions "qinterpInteg", which integrates from x[0], and "qinterpDiff". The quadratic 
+spline together with its Integral and derivative have been run for the same data-set as
+in A and can be found as "QuadSpline.svg".
+
+
+

@@ -1,0 +1,76 @@
+
+
+
+A. (6 points) Solving linear equations using QR-decomposition by modified Gram-Schmidt 
+orthogonalization
+
+Implement a static class "QRGS" with functions "decomp", "solve", and "det". The function 
+"decomp" should perform stabilized Gram-Schmidt orthogonalization of an n×m (where n≥m) 
+matrix A and calculate R. The function/method "solve" should use the matrices Q and R from 
+"decomp" and solve the equation QRx=b for the given right-hand-side "b". The 
+function "det" should return the determinant of matrix R which is equal to the 
+determinant of the original matrix. Determinant of a triangular matrix is given by the 
+product of its diagonal elements.
+
+The functions "decomp", "solve", and "det" can be found in "QRGS.cs". 
+
+Operation on a randomly generated real tall matrix (7,5) A with the "decomp" function, should
+yield an Orthogonal matrix Q such that Q*Q^T = 1 and an upper triangular matrix R:
+
+{0}
+
+The decomp(A) function is run and we get
+{1}
+and
+{2}
+
+R is easily seen to be upper triangular and we find that Q*Q^T = 1: (within reasonable error)
+
+{3}
+
+Q and R must also satisfy the equality Q*R = A in order to be the uniqe decomposition and we
+find
+
+{4}
+
+I conclude that the "decomp" implementation works as intended.
+
+Operation on a randomly generated real square matrix (5,5) M with the "decomp" function,
+followed by the "solve" function on it's associated Q,R matrices and a randomly generated
+vector b, should solve the linear equation Ax=b:
+
+{5}
+and
+{6}
+
+The solve(Q,R,b) function is run and we get the solution vector
+
+{7}
+
+By application of M on x we should regain b:
+
+{8}
+
+I conclude that the "solve" implementation works as intended.
+
+
+
+B (3 points) Matrix inverse by Gram-Schmidt QR factorization
+
+Add the function "inverse" to the "QRGS" class that, using the calculated Q and R, should
+calculate the inverse of the matrix A and return it. 
+
+Operation on a randomly generated real square matrix (5,5) A with the "decomp" function,
+followed by the "inverse" function on it's associated Q,R matrices should yield the inverse:
+
+{9}
+
+The Inverse(Q,R) is run and we get a new matrix B
+
+{10}
+
+For B to be the inverse we need A*B = 1:
+
+{11}
+
+I conclude that the "inverse" implementation works as intended.

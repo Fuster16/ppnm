@@ -1,0 +1,76 @@
+
+
+
+A (6 points) Plain Monte Carlo integration
+
+
+
+A.1 Implement a Plain Monte Carlo multi-dimensional integration routine.
+
+This i have done by following the suggested code. The Plain Monte Carlo function can be found
+in "montecarlo.cs" as "plainmc". The implementation takes a scalar function with vector 
+argument. This function is not the "raw" function, but is associated with it's integration region
+
+
+
+A.2 Calculate some interesting two-dimensional integrals with your Monte-Carlo routine 
+(for example, calculate the area of a unit circle). Plot the estimated error and the actual 
+error as functions of the number of sampling points. Check whether the actual error scales 
+as 1/sqrt(n).
+
+For this problem i have opted to calculate the suggested "area of a unit circle" together 
+with the area under a sine curve, elevated sine curve and area under a parabola.
+
+The methods "ucirc", "asin", "esin" and "parabola" in the "sfun.cs" file makes up well defined
+functions (almost) ready for monte-carlo integration (see the "main.cs"). Running the plain 
+mc with N = 1e8 we find:
+
+		area ucircle = 3.14166508 , area sin (0 to 2pi) = -0.0006647610054996 
+
+	area elevated sin (0 to 2pi) = 12.5672773408309, area parabola(x^2) (-1 to 1) = 0.66676132
+
+This corresponds well with theory.
+
+The estimated error and actual error as functions of sampling points have been 
+plottet for the ucircle and sine and can be found in "ucirc_err.svg" and "sine_err.svg" 
+respectively. These have been plotted in a double logarithmic scale coordinate system.
+
+The function f(x) = 1/sqrt(x) transforms according to: e^g(y(x)) = f(x) and  x(y) = e^y such 
+that
+		e^g(y(x)) = sqrt(1/e^y)  --> g(y(x)) = -0.5*ln(e^y) = -0.5*y	
+
+They are easily seen to scale as 1/sqrt(N), where N is number of samplings.
+
+
+
+A.3 Try to calculate the integral
+
+	(1/pi)^3*int_0^pi dx int_0^pi dy int_0^pi dz of [1 - cos(x)*cos(y)*cos(z)]^(-1)
+
+It should yield approximately 1.44861 according to wolfram alpha
+
+The integral can be made brute force by integrating from (small) to (pi - small) in order
+to avoid the singularity, i have taken small ==  Pow(2,-8) in this case.
+
+I find the integral value to be 1.38500080407716
+
+
+
+
+B (3 points) Quasi-random sequences
+
+Implement a multidimensional Monte-Carlo integrator that uses low-discrepancy (quasi-random) 
+sequences. The error could be estimated by using two different sequences. Compare the 
+scaling of the error with your pseudo-random Monte-Carlo integrator.
+
+This has been done. The quasi-random Monte-Carlo integrator can be found in the 
+"montecarlo.cs" file, as "quasimc". I decided to use Halton sequences for mine. The methods 
+required for this integration routine can be found in the sfun library under "Halton".
+
+Error estimation is built into the integrator. However, it is simply the absolute difference 
+between the result of a parallel routine with different Halton bases. The estimated error 
+and actual error as functions of sampling points have been plottet for the ucircle and sine 
+and can be found in "ucirc_errB.svg" and "sine_errB.svg" respectively, just as in A2.
+
+The scaling of the actual errors for the quasi-random Monte-Carlo compared to the Plain MC
+can be found in "ucirc_actualAB.svg" and "sine_actualAB.svg"

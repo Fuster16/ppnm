@@ -1,0 +1,73 @@
+
+
+
+A. (6 points) Newton's method with numerical Jacobian and back-tracking line search
+
+Implement the Newton's method with simple backtracking linesearch algorithm where the 
+derivatives in the Jacobian matrix are calculated numerically using finite differences as 
+described in the Book.
+
+The Newtons method have been implemented as "newton" in the "roots.cs" file according to the
+requirements in the Homework8 description. 
+I have taken some creative liberty here and implemented the refined becktracking linesearch 
+as described in the book. The simple one can also be found in "roots.cs".
+
+For the debugging i'm considering the two functions: grad(f1(x,y) = -(x + y)^2 + x*y) and a simple 
+sine function: f2(x) = sin(x) if 0 < x < pi, f2(x) = 2 else.
+
+Taking (0.1,0.1) to be the start value (guess) for first function and pi/1.5 for the 
+second, the newtons method yields:
+
+f1(r1) = 0.0185716212507076 and f2(r2) = 4.03447921253411E-06 with roots r1 = (0.10000014901292,0.0906918693572148) and r2 = 3.14360125624792
+
+This corresponds with expectations and the right roots have been found.
+
+A root for the gradient of the Rosenbrock function has been found by guessing (1.1,0.9).
+
+The function yields f(r) = 4.87396211316796 with root at (0.979949097672044,0.965398125947079). 
+This is an expected root other than (0,0) and thus also correspond with expectations.
+
+
+
+B (3 points) Bound states of hydrogen atom with shooting method for boundry value problems
+
+The theory for the problem of solving the s-wave radial schrödinger equation is well known 
+(and well explained if i must say so) from Homework2 and i thus refer to the Out.txt file
+from this problem.
+
+What is done differentlty here is that the differential equation
+
+				-(1/2)f'' - (1/r)f = Ef
+
+should be solved by a (my own) ODE solver with initial conditions matching those of physical
+solutions for different values of E. Refering to the Homework2 explanation, the initial 
+conditions was found to be f(0) = 0 and f'(0) = 1 . Due to the (1/r) term however, this is 
+not possible and the initial conditions are changed to: 
+			
+			f(r_min) = r_min - (r_min)^2 and f'(r_min) = 1 - 2*r_min
+
+where r_min << 1. I start by taking r_min = 1.0/100.
+
+The associated first order ODE is found by isolating f'' = Y(r,f,f') = -2(E + 1/r)*f to be:
+
+		y = (f, f')	and	dy/dr = (f',f'') = (f', Y)
+
+From the ODE library we can request function values F_E at some r_max, say 10 Bohr radii, 
+without it tracking the whole function. The ODE driver actually provides function value
+AND derivative. For the correct solution we expect both of these to be 0. The (0,0) is thus
+our root and we can root find over the vectorized ODE.
+
+This i have done for several values of E in the range (-1,0) for a visual overview. The 
+solution values F_E(r_max = 10) as a function of E can be found in "ShootingE0.svg". 
+
+By guessing -0.52, the root finder is able to find the root at -0.504730870990813, which is correct.
+The resulting wave-function is plotted together with the analytic in "E_0Compare.svg".
+
+The root-finder convergence as function of r_min and r_max separately, can be found in 
+"r_minConvergence.svg" and "r_maxConvergence.svg" respectively.
+
+The convergence of the root-finder with respect to the acc and eps ODE parameter can be 
+found in "accConvergence.svg" and "apsConvergence.svg" respectively.
+
+
+

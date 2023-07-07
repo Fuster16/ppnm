@@ -1,0 +1,42 @@
+
+
+
+A. (6 points)
+In this homework we shall construct a simplest artificial neural network which will be 
+trained to interpolate a tabulated function. It is an ordinary three-layer neural network
+with one neuron in the input layer, several neurons in the hidden layer, and one neuron in 
+the output layer. Train your network to approximate some intersting function, for example
+
+				g(x)=Cos(5*x-1)*Exp(-x*x) 
+
+sampled at several points on [-1,1]. The gaussian wavelets are (probably) the best 
+activation functions for this task.
+
+The interval [-1,1] have been sampled for the above function, by a linearly spaced interval.
+The resulting table is then streamed to the output text file "Response.txt"
+and used to train a neural network. The neural network with the associated function is 
+plotted in "AfunctionPlot.svg". The above proceedure has been made similarly for the 
+functions:
+			g1(x) = exp(-x*x)	and 	g2(x) = 5
+
+
+
+B. (3 points)
+Modify the previous exercise such that the network, after training, could also return the 
+first and second derivatives and also the anti-derivative of the approximant to the 
+tabulated function. A gaussian wavelet could be a good activation function here as both its 
+derivatives and the anti-derivative are analytic.
+
+This has been done. The anti-derivative, derivative and second derivative of the function
+g(x)=Cos(5*x-1)*Exp(-x*x) has been made and can be found in "Anti_derivative.svg", 
+"derivative.svg" and "2derivative.svg".
+
+In order to compare the results with the function g(x), we need to know it's anti-derivative,
+derivative and 2nd derivative. These are however very ugly --> I have used the finite 
+difference method and the numerical adaptive integrator from Homework6 for this.
+
+
+
+
+
+

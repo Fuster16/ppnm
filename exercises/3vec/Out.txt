@@ -1,0 +1,27 @@
+
+Exercise vec 
+Build a class called vec to represent eucledian 3D vectors
+
+This i have done. 
+The documented code can be found in the vec.cs file associated with this exercise
+Below is an extensive testing of the 3D-vec class:
+
+u = 1, 2, 3
+v = 2, 3, 4
+
+
+v+u =3, 5, 7
+v-u =1, 1, 1
+2*v =4, 6, 8
+-u = -1, -2, -3
+
+
+u.dot(v) = 20
+vec.dot(v,u) = 20
+vec.dot(u,v) = 20
+
+
+u.approx(v,1) = False
+u.approx(v,1.1) = True
+vec.approx(u,v,1) = False
+vec.approx(v,u,1.1) = True

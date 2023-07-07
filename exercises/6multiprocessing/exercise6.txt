@@ -1,0 +1,56 @@
+Exercise "multiprocessing"
+
+- Calculate the harmonic sum, sharing the computation load between several processors
+
+Tasks:
+
+1. Prepare the subroutine to be run in a thread
+
+This i have done. The data class together with the sum function can be found in the "data.cs"
+file.
+
+
+
+2. Create a Main function that reads, from the command-line, two parameters, the number of 
+threads to be created and the number of terms in the harmonic sum to calculate.
+
+This is similar to that of the "main1.cs" from the IO exercise. The implementation can be
+found in the "main.cs" file.
+
+
+
+3. Prepare data-objects to be used locally in separate threads
+
+This is done in order to prevent the "race-condition" where several threads try to access/
+uppdate the same variable. This can also be found in the "main.cs" file.
+
+
+
+4. Prepare the threads and run them in parallel
+5. Join the threads
+6. Calculate the total sum.
+
+A calculation of the total sum from a = 1 to b = 1e8 has been found to yield around ~ 18.99 
+using threads. Depending on thread number, the total sums differ slightly. This i contribute
+to the fact that the terms cant be represented properly. Thus the different addition orders 
+due to different number of threads will yield slightly different values. I thus conclude that
+the thread implementation works as intendend.
+
+
+
+7. Using the POSIX "time"-utility measure the processor times running your Main with 
+different number of threads.
+
+This has been done. The timings can be found in "Out.txt"
+
+
+
+8. Now calculate the harmonic sum using "Parallel.For". Time it and explain why it runs 
+slower than the serial for-loop even with one thread. 
+
+The "Parallel.For" function has been implemented. It's time can be found in "Out1.txt" and 
+"Out.txt". It takes time for the function to parallelize the given task. Since the block to 
+loop is a simple arethmetic operation rather than a more involved set of operations, the 
+gain is minimal (negative for in this example) compared to simply running it in serial.
+
+

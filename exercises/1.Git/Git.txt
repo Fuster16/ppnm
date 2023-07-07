@@ -1,0 +1,4 @@
+A repository have been created on my box with a ~/repos/ppnm/Homeworks folder and a
+~/repos/ppnm/exercises folder (also a lecture folder, however this is irrelevant for 
+the examination process) . All future changes to these folders are pushed using git to the
+server "https://github.com/Fuster16/ppnm"

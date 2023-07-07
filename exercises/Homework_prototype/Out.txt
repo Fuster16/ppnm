@@ -1,0 +1,235 @@
+A. (6 points) Jacobi diagonalization with cyclic sweeps
+
+
+
+A.1 
+Make a function "timesJ" which multiplies (in-place) the given matrix A with the Jacobi
+matrix J(p,q,theta) from the right, timesJ : A --> AJ, in O(n) operations.
+
+The function Jtimes lies in the "jacobi" class from the jacobi.cs file. 
+
+
+
+A.2 
+Make a function "Jtimes" which multiplies (in-place) the given matrix A with the jacobi 
+matrix J(p,q,theta) from the left, Jtimes : A --> JA, in O(n) operations. 
+
+I have taken some creative liberty and made "Jtimes" the function which multiplies the
+matrix A with the transposed jacobi matrix J^T from the left, that is: Jtimes: A --> J^T A, 
+since its structure can be made similar to that of timesJ (see jacobi.cs). 
+
+The requested Jtimes function can thus be obtained by letting theta --> -theta.
+
+Operation on a randomly generated (real and symmetric) matrix A, on randomly chosen matrix 
+element with theta set so said element is should yield zero:
+
+A = 
+( 65   95   75   75   69  )
+
+( 95   27   72   29   38  )
+
+( 75   72   50   45   21  )
+
+( 75   29   45   67   96  )
+
+( 69   38   21   96   98  )
+
+(p,q) = (5, 4) (Randomly chosen elements)
+theta = 0.865436598236019 (calculated such that A[p,q] = 0 after rotation)
+timesJ(A, p, q, theta) and Jtimes(A, p, q, theta) are run and we get
+
+A = 
+( 65   95   75   101.158190725704   -12.3701434551911  )
+
+( 95   27   72   47.7333037458753   2.55572171881102  )
+
+( 75   72   50   45.1627953566682   -20.6475643980522  )
+
+( 101.158190725704   47.7333037458753   45.1627953566682   179.743251693884   2.04281036531029E-14  )
+
+( -12.3701434551911   2.55572171881102   -20.6475643980522   0   -14.7432516938836  )
+
+with the corresponding random element zeroed (within reasonable error), i conclude the above 
+implementation works.
+
+
+
+A.3 
+Make a function, say cyclic, that implements the Jacobi eigenvalue algorithm for 
+real symmetric matrices using the cyclic sweeps: eliminate the off-diagonal elements 
+in a predefined sequence which spans all off-diagonal elements, for example row after 
+row, repeating the sweeps until converged. The convergence criterion could be that none 
+of the diagonal elements changed after a whole sweep.
+
+The function cyclic lies in the "jacobi" class from the jacobi.cs file. The function makes
+a sweep by applying the timesJ (followed by Jtimes) on each element above the diagonal, row
+by row. The criteria of convergence is that the sum of the above-diagonal elements is below
+a pre-determined number, "acc". This is done by storing the initial "sum of squared 
+values" and subtracting (while sweeping, before zeroing) the given element squared from the 
+sum and adding the (while sweeping, after zeroing) new element squared (which should now be 
+zero) to the sum. 
+
+It should be noted that the above implementation can be made ~2X faster by coding the cyclic
+function elementwise instead of taking matrix products. The cycle function can be made to
+only work the diagonal and above-diagonal elements (the matrix is symmetric at each step
+anyway) and set the under-diagonal elements before returning.
+
+Operation on a randomly generated (real and symmetric) matrix M:
+
+M = 
+( 65   95   75   75   69  )
+
+( 95   27   72   29   38  )
+
+( 75   72   50   45   21  )
+
+( 75   29   45   67   96  )
+
+( 69   38   21   96   98  )
+
+(w,V) = cyclic(M) is run and found to produce the tuple items:
+
+V = 
+( 0.576227370441914   0.530095464298018   0.218209242971863   0.244583697137682   0.52870063141666  )
+
+( -0.727031799318112   0.0606552858562068   0.394611390520634   0.410555333057764   0.378776805054335  )
+
+( 0.193450841148578   -0.637112413144085   -0.416932718626816   0.49521170635015   0.370940721826081  )
+
+( -0.307860367285809   0.324135943288512   -0.671131554144914   -0.372082374448588   0.459668389362208  )
+
+( 0.0847676037612198   -0.452043580105457   0.41523020352872   -0.622850869880395   0.477610434354982  )
+
+w = 
+(-59.6031978761976)
+(-27.2511732221957)
+(-5.87624282293286)
+(86.5096271777361)
+(313.22098674359)
+
+We check the properties of V and run several tests:
+
+The calculation of V^T*M*V below should give a matrix D with elements D[i,i] = w[i]
+D = 
+( -59.6031978761976   4.38389661017169E-06   4.50167547683122E-09   -1.33226762955019E-15   -6.66133814775094E-15  )
+
+( 4.38389660217808E-06   -27.2511732221957   0   -0.000292236182905192   1.38854320290704E-05  )
+
+( 4.5016685656929E-09   1.77635683940025E-15   -5.87624282293286   -1.24419883187343E-05   3.1507087383531E-08  )
+
+( -4.44089209850063E-15   -0.000292236182904304   -1.24419883142934E-05   86.5096271777361   3.88833854003678E-10  )
+
+( -1.24344978758018E-14   1.38854320397286E-05   3.15070849410404E-08   3.88823195862642E-10   313.22098674359  )
+
+Calculation of the reverse, V*D*V^T, should yield the matrix M back.
+M1 = 
+( 65   95   75   75   69  )
+
+( 95   27   72   29   38  )
+
+( 75   72   50   45   21  )
+
+( 75   29   45   67.0000000000001   96.0000000000001  )
+
+( 69   38   21   96.0000000000001   98.0000000000001  )
+
+The calculation of V^T*V and V*V^T should both give the identity matrix
+Id = 
+( 1   -2.77555756156289E-16   2.77555756156289E-17   -2.77555756156289E-17   5.55111512312578E-17  )
+
+( -2.77555756156289E-16   1   2.77555756156289E-17   -2.77555756156289E-17   -8.32667268468867E-17  )
+
+( 2.77555756156289E-17   2.77555756156289E-17   1   -2.4980018054066E-16   -1.94289029309402E-16  )
+
+( -2.77555756156289E-17   -2.77555756156289E-17   -2.4980018054066E-16   1   5.27355936696949E-16  )
+
+( 5.55111512312578E-17   -8.32667268468867E-17   -1.94289029309402E-16   5.27355936696949E-16   1  )
+
+and
+Id^T = 
+( 1   5.55111512312578E-17   -3.46944695195361E-17   1.17961196366423E-16   6.93889390390723E-17  )
+
+( 5.55111512312578E-17   1   1.66533453693773E-16   -2.22044604925031E-16   -8.32667268468867E-17  )
+
+( -3.46944695195361E-17   1.66533453693773E-16   1   5.55111512312578E-17   -2.77555756156289E-17  )
+
+( 1.17961196366423E-16   -2.22044604925031E-16   5.55111512312578E-17   1   -2.77555756156289E-16  )
+
+( 6.93889390390723E-17   -8.32667268468867E-17   -2.77555756156289E-17   -2.77555756156289E-16   1  )
+
+All of the above tests are seen to pass within reasonable error and i conclude that my
+implementation of the Jacobi eigenvalue algorithm works.
+
+
+
+B. (3 points) Hydrogen atom, s-wave radial Schrödinger equation on a grid
+
+This problem concerns the radial equation of the hydrogen atom in the case of l=0.
+
+The form of the problem is given by: 
+
+			     -(1/2)f'' -(1/r)f = εf, 
+
+which is comparable to eq. (4.56) from "Introduction to quantum mechanics" by 
+David J. Griffith and Darrell F. Schroeter for l=0:
+
+				u'' + (p_0/p)u = u	(4.56)
+
+This can be seen equivalent if we let u(p) = f(p*p_0/2), yielding that ε = -Pow(1/p_0,2)*2
+where p_0 = 2n ==> ε = -Pow(1/n,2)/2
+
+The function u(p) has the relation u(r/a/n) = R(r)*r, where R(r) is a radial wave-function.
+Thus the radial wave-functions in terms of f, is given by 
+
+		R(r) = u(r/a/n)/r = f((r/a/n)*(2n)/2)/r = f(r/a)/r
+
+for n = 1,2,3,4 and l=0, the corresponding expression for R_nl(r) is also given in 
+"Introduction to quantum mechanics" in table 4.7 on page 151 and we thus have analytical 
+eigenvalues and eigenvectors to compare.
+
+A point to be made before computation is the analysis of boundry conditions on the given
+differential equation. Letting r --> 0  ~~>  (1/2)f'' + (1/r)f = 0. For physical solutions
+at r = 0, we thus require f to go to zero faster than r. (r-r^2 can be seen as the specific
+solution that goes through (0,0) with derivative (0,0) (physical conditions). It is thus 
+unique and each physical solution for r --> 0 will behave as f(r --> 0 ) --> 0.)
+For r --> infinity ~~>  (1/2)f'' -εf = 0 which have the known general solution
+
+			f = A*e^(+sqrt(2ε)r) + B*e^(-sqrt(2ε)r). 
+
+The physical solution for this is f = e^(- sqrt(2ε)r) and we also find f(r --> infty ) --> 0.
+
+
+
+B.1
+Solve the grid representation of the above differential equation in f and obtain the
+eigenvalues and eigenvectors using your jacobi routine. Investigate the convergence of
+the lowest energy eigenvalue when you vary the number of cuts, dr, and when you vary the
+lenght of solution interval, rmax.
+
+The grid-representation of the differential equation is made and solved via the function 
+"Rdiff" which lie in the "Hatom" class from Hatom.cs. The function takes (rmax, dr) as 
+arguments and solves the grid representation accordingly using the jacobi.cycle function.
+
+The initial rmax is chosen at 10 times Bohr radi. That is,
+ 
+				R(10*a)*10*a = f(10)
+
+and we get rmax = 10 and let dr be 0.1. (See Makefile)
+
+The initial eigenvalues and eigenvectors are of size 100 and are thus sent to 
+"Initial_Rdiff.txt" and not shown here. What is shown, is the first eigenvalue.
+
+E0 = -0.498755436484437 This is very close to -0.5
+
+Now. The values of rmax is varied with dr = 0.1 and dr is varied with rmax = 10.
+(see main.cs) The corresponding values of the 0'th eigenvalue as a function of rmax and dr 
+has been plotted together in the "rmax_dr.svg" file.
+
+
+
+B.2
+Plot several lowest eigen-functions and compare with analytical results. 
+
+The l=0, n = 1,2,3 analytical solutions R_nl from "Introduction to quantum mechanics" have
+been plotted together with their corresponding normalized eigenfunctions in the 
+"Eigenfuncs.svg". See Hatom.cs for the analytic solution expressions.

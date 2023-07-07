@@ -1,0 +1,150 @@
+A. (6 points) Jacobi diagonalization with cyclic sweeps
+
+
+
+A.1 
+Make a function "timesJ" which multiplies (in-place) the given matrix A with the Jacobi
+matrix J(p,q,theta) from the right, timesJ : A --> AJ, in O(n) operations.
+
+The function Jtimes lies in the "jacobi" class from the jacobi.cs file. 
+
+
+
+A.2 
+Make a function "Jtimes" which multiplies (in-place) the given matrix A with the jacobi 
+matrix J(p,q,theta) from the left, Jtimes : A --> JA, in O(n) operations. 
+
+I have taken some creative liberty and made "Jtimes" the function which multiplies the
+matrix A with the transposed jacobi matrix J^T from the left, that is: Jtimes: A --> J^T A, 
+since its structure can be made similar to that of timesJ (see jacobi.cs). 
+
+The requested Jtimes function can thus be obtained by letting theta --> -theta.
+
+Operation on a randomly generated (real and symmetric) matrix A, on randomly chosen matrix 
+element with theta set so said element is should yield zero:
+
+{0}
+(p,q) = {1} (Randomly chosen elements)
+theta = {2} (calculated such that A[p,q] = 0 after rotation)
+timesJ(A, p, q, theta) and Jtimes(A, p, q, theta) are run and we get
+
+{3}
+with the corresponding random element zeroed (within reasonable error), i conclude the above 
+implementation works.
+
+
+
+A.3 
+Make a function, say cyclic, that implements the Jacobi eigenvalue algorithm for 
+real symmetric matrices using the cyclic sweeps: eliminate the off-diagonal elements 
+in a predefined sequence which spans all off-diagonal elements, for example row after 
+row, repeating the sweeps until converged. The convergence criterion could be that none 
+of the diagonal elements changed after a whole sweep.
+
+The function cyclic lies in the "jacobi" class from the jacobi.cs file. The function makes
+a sweep by applying the timesJ (followed by Jtimes) on each element above the diagonal, row
+by row. The criteria of convergence is that the sum of the above-diagonal elements is below
+a pre-determined number, "acc". This is done by storing the initial "sum of squared 
+values" and subtracting (while sweeping, before zeroing) the given element squared from the 
+sum and adding the (while sweeping, after zeroing) new element squared (which should now be 
+zero) to the sum. 
+
+It should be noted that the above implementation can be made ~2X faster by coding the cyclic
+function elementwise instead of taking matrix products. The cycle function can be made to
+only work the diagonal and above-diagonal elements (the matrix is symmetric at each step
+anyway) and set the under-diagonal elements before returning.
+
+Operation on a randomly generated (real and symmetric) matrix M:
+
+{4}
+(w,V) = cyclic(M) is run and found to produce the tuple items:
+
+{5}
+{6}
+
+We check the properties of V and run several tests:
+
+The calculation of V^T*M*V below should give a matrix D with elements D[i,i] = w[i]
+{7}
+Calculation of the reverse, V*D*V^T, should yield the matrix M back.
+{8}
+The calculation of V^T*V and V*V^T should both give the identity matrix
+{9}
+and
+{10}
+All of the above tests are seen to pass within reasonable error and i conclude that my
+implementation of the Jacobi eigenvalue algorithm works.
+
+
+
+B. (3 points) Hydrogen atom, s-wave radial Schrödinger equation on a grid
+
+This problem concerns the radial equation of the hydrogen atom in the case of l=0.
+
+The form of the problem is given by: 
+
+			     -(1/2)f'' -(1/r)f = εf, 
+
+which is comparable to eq. (4.56) from "Introduction to quantum mechanics" by 
+David J. Griffith and Darrell F. Schroeter for l=0:
+
+				u'' + (p_0/p)u = u	(4.56)
+
+This can be seen equivalent if we let u(p) = f(p*p_0/2), yielding that ε = -Pow(1/p_0,2)*2
+where p_0 = 2n ==> ε = -Pow(1/n,2)/2
+
+The function u(p) has the relation u(r/a/n) = R(r)*r, where R(r) is a radial wave-function.
+Thus the radial wave-functions in terms of f, is given by 
+
+		R(r) = u(r/a/n)/r = f((r/a/n)*(2n)/2)/r = f(r/a)/r
+
+for n = 1,2,3,4 and l=0, the corresponding expression for R_nl(r) is also given in 
+"Introduction to quantum mechanics" in table 4.7 on page 151 and we thus have analytical 
+eigenvalues and eigenvectors to compare.
+
+A point to be made before computation is the analysis of boundry conditions on the given
+differential equation. Letting r --> 0  ~~>  (1/2)f'' + (1/r)f = 0. For physical solutions
+at r = 0, we thus require f to go to zero faster than r. (r-r^2 can be seen as the specific
+solution that goes through (0,0) with derivative (0,0) (physical conditions). It is thus 
+unique and each physical solution for r --> 0 will behave as f(r --> 0 ) --> 0.)
+For r --> infinity ~~>  (1/2)f'' -εf = 0 which have the known general solution
+
+			f = A*e^(+sqrt(2ε)r) + B*e^(-sqrt(2ε)r). 
+
+The physical solution for this is f = e^(- sqrt(2ε)r) and we also find f(r --> infty ) --> 0.
+
+
+
+B.1
+Solve the grid representation of the above differential equation in f and obtain the
+eigenvalues and eigenvectors using your jacobi routine. Investigate the convergence of
+the lowest energy eigenvalue when you vary the number of cuts, dr, and when you vary the
+lenght of solution interval, rmax.
+
+The grid-representation of the differential equation is made and solved via the function 
+"Rdiff" which lie in the "Hatom" class from Hatom.cs. The function takes (rmax, dr) as 
+arguments and solves the grid representation accordingly using the jacobi.cycle function.
+
+The initial rmax is chosen at 10 times Bohr radi. That is,
+ 
+				R(10*a)*10*a = f(10)
+
+and we get rmax = 10 and let dr be 0.1. (See Makefile)
+
+The initial eigenvalues and eigenvectors are of size 100 and are thus sent to 
+"Initial_Rdiff.txt" and not shown here. What is shown, is the first eigenvalue.
+
+{11} This is very close to -0.5
+
+Now. The values of rmax is varied with dr = 0.1 held constant and dr is varied with 
+rmax = 10 held constant. (see B1.cs) The corresponding values of the 0'th eigenvalue 
+as a function of rmax and dr has been plotted together in the "rmax_dr.svg" file.
+
+
+
+B.2
+Plot several lowest eigen-functions and compare with analytical results. 
+
+The l=0, n = 1,2,3 analytical solutions R_nl from "Introduction to quantum mechanics" have
+been plotted together with their corresponding normalized eigenfunctions in the 
+"Eigenfuncs.svg". See Hatom.cs for the analytic solution expressions. See B2.cs for code.

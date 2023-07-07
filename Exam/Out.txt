@@ -1,0 +1,83 @@
+
+Since there isn't a lot to go after for this examination description, i'm giving myself some
+assignments:
+
+
+A. (6 points) Particle Swarm Optimization (PSO)
+
+
+
+A.1 
+Implement the PSO routine.
+
+This i have done. The implementation can be found in the file "optimize.cs" under "PSO".
+
+
+
+
+A.2
+Debug your routine on certain functions: 
+The Himmelblau's function: h(x,y)=(x^2+y-11)^2+(x+y^2-7)^2
+The Rosenbrock's valley function: r(x,y)=(1-x)^2+100(y-x^2)^2
+
+Record the number of steps it takes for the algorithm to converge with damping parameter
+w = 72. Also. Examine the convergence time as a function of the damping parameter, w.
+
+The routine has been run several times for the above functions in regions of suspected 
+minima, and yields:
+
+h0 = ( 3.0943414201585  1.85797494245649 ) with count 2000	and	h1 = ( -1.76420202439625  0.0406204648399742 ) with count 2000
+
+h2 = ( 3.67277641989273  -1.70865822507685 ) with count 2000	and	h3 = ( -2.41659626221143  3.0666985032395 ) with count 2000
+
+And the Rosenbrock functions:
+
+r0 = ( 1.22364698565052  1.23946225746415 ) with count 2000	and	r1 = ( 1.19553003394381  1.43022518169468 ) with count 2000
+
+r2 = ( 0.859631241159279  0.734613325422299 ) with count 2000	and	r3 = ( 0.765564933928814  0.588914259005003 ) with count 2000
+
+The relation between convergence time and damping parameter has been made on the Rosenbrock
+due to it only having 1 minima. This can be found as "Conv_Damp_relation.svg".
+However, this plot isn't very indicitive (partly due to my convergence criteria i think) and
+in B i will thus try to record the average distance from the particles to the global best at
+each step!
+
+
+
+
+B. (3 points) 
+Implement the "Bare Bones" PSO routine and compare the convergence time to the standard PSO
+on the same functions as in A. Here it might be a good idea to implement generic lists in 
+order to record the PSO routine.
+
+The BBPSO routine has been run several times for the above functions in regions of suspected 
+minima, and yields:
+
+h0 = ( 3.54949292852153  2.01991282909712 ) with count 2000	and	h1 = ( 1.39287247998782  2.0979151902456 ) with count 2000
+
+h2 = ( 3.95510005706178  -0.0161401652306554 ) with count 2000	and	h3 = ( 4.04487639062395  0.76278666234649 ) with count 2000
+
+And the Rosenbrock functions:
+
+r0 = ( 0.550261287578484  0.352595017420579 ) with count 2000	and	r1 = ( 1.09432399972643  -0.11778126812524 ) with count 2000
+
+r2 = ( -0.901243608335079  0.533933415581849 ) with count 2000	and	r3 = ( 0.0323439818392591  0.118833849133802 ) with count 2000
+
+In the figure "Conv_time_comparison.svg" the PSO and BBPSO can be found compared for the
+Rosenbrock function. The figure represents the average distance the particles have to the 
+(at the time) global best position. Another figure, "Conv_time_comparison100.svg", then 
+makes comparison by averaging over 100 routine instances.
+
+
+
+
+C. (1 point)
+Here i have decided to modify the PSO such that the initial velocities and positions are 
+quasi-random. Add the QuasiPSO to the Comparison figures from B.
+The figures "Conv_time_comparison.svg" and "Conv_time_comparison100.svg" have been updated.
+
+At a last moments notice i thought to animate the PSO, however this failed. 
+I then tried to make some "Before.svg" and "After.svg" images of one of the routine instances. 
+These can be found in the folder. However, nothing has changed? And i dont known why. I have
+looked through my code hours on end and cannot find where it goes wrong. All of the above
+results must be due to taking the best random sampling then.

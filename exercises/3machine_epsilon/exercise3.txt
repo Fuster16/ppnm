@@ -1,0 +1,89 @@
+Exercise "machine epsilon"
+
+- Maximum/minimum representable integrers. Machine epsilon; How to compare two doubles.
+
+Tasks
+
+1. Maximum/minimum representable integers.
+
+Use the while-loop to determine your maximum integer and compare it with "int.MaxValue".
+Use the while-loop to determine your minimum integer and compare it with "int.MinValue".
+
+By the suggested method of computation, maximum and minimum representable integer values 
+have been found to yield 
+
+{0}
+{1}
+
+The "int.MaxValue" and "int.MinValue" commands yield
+
+{2}
+{3}
+
+respectively.
+
+2. The machine epsilon is the difference between 1.0 and the next representable floating 
+point number. Using the while loop calculate the machine epsilon for the types float and 
+double. For single precision (float) the machine epsilon should be about 
+"System.Math.Pow(2,-23)", "System.Math.Pow(2,-52)" for doubles. Check this.
+
+By following the suggested while-loop i find the machine epsilon to be 
+
+{4} for doubles and {5} for floats
+
+This is close to the value of "System.Math.Pow(2,-56)" and "System.Math.Pow(2,-23)" which is 
+evaluted to give
+
+{6} for doubles and {7} for floats
+
+3. Suppose double tiny = epsilon/2. Calculate the two sums: sumA = 1 + tiny + tiny +...+ tiny and 
+sumB = tiny + tiny +...+ tiny + 1, which should seemingly be the same and print out the 
+values sumA-1 and sumB-1. 
+
+Following the suggested method of computation i find the two sums to yield:
+
+				{8} 
+and 
+				{9}
+
+
+This is due to round off errors. In the case of sumB, i think c# recognices that the results
+should equal n*tiny. The result is thus above machine epsilon when the "+1" followed by "-1" 
+operations happen. 
+
+This is no longer the case for sumA, where a tiny number (epsilon/2) is added to 1
+each itteration. It is rounded to nearest machine representation in-between each and 
+thus down to 1.
+
+4. The equality operator "==" works well on integer types but is not very useful on floating 
+types. Indeed most doubles do not have an exact representation of their values in a computer.
+They must be rounded to be saved. Because of this rounding, comparing two doubles with the 
+"==" operator would produce a wrong result. 
+
+For example, in this code:
+
+double d1 = 0.1+0.1+0.1+0.1+0.1+0.1+0.1+0.1;
+double d2 = 8*0.1;
+	
+both doubles "d1" and "d2" should be equal 0.8 and then the "==" operator should produce the
+"true" result. However this is not the case. That is because the decimal number 0.1 cannot 
+be represented exactly as a 52-digit binary number.
+
+Also. Implement a function with the signature
+
+		bool approx(double a, double b, double acc=1e-9, double eps=1e-9)
+
+that returns "true" if the numbers 'a' and 'b' are equal either with absolute precision "acc",
+|a-b| < acc or with relative precision "epsilon", |a-b|/Max(|a|,|b|) < eps and returns 
+"false" otherwise. 
+
+By following the suggested method i find that
+
+					{10}
+
+Namely that the two double values d1 and d2 are not equal. By the implementation of the
+suggested approx function, it is however found that
+
+					{11}
+
+The approx function is thus seen to be working on the d1 and d2 doubles.

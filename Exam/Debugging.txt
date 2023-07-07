@@ -1,0 +1,383 @@
+	////// B
+	
+	// The "Bare Bones" Particle Swarm Optimizer is added to the lists from A
+	for(int i = 0; i<4; i++){
+		h_min.add(optimization.BBPSO(h, ha, hb, null, null, 20, 100, 0.01));
+		r_min.add(optimization.BBPSO(r, ra, rb, null, null, 20, 100, 0.01));
+	}
+	// Strings now ready for standard output
+	string[] hstring = new string[8]; string[] rstring = new string[8];
+	for(int i = 0; i< 8; i++){
+		hstring[i] = calcs.VTS(h_min[i].Item1, $"h{i} = ") + $" with count h_min[i].Item2";
+		rstring[i] = calcs.VTS(r_min[i].Item1, $"r{i} = ") + $" with count r_min[i].Item2";
+	}
+
+	// Generic lists for best particle positions at i'th time and index for global best
+	var Mp1 = new optimization.genlist<matrix>(); var G1 = new optimization.genlist<int>();
+	var Mp2 = new optimization.genlist<matrix>(); var G2 = new optimization.genlist<int>();
+	var Mp3 = new optimization.genlist<matrix>(); var G3 = new optimization.genlist<int>();
+
+	vector count1 = new vector(101); count1[0] = 0; // should be default though
+	vector count2 = new vector(101); count2[0] = 0;
+	vector count3 = new vector(101); count3[0] = 0;
+
+	//// C
+	matrix xprimes = new matrix(2, 100); // the coloumn vectors will be bases for the upcomming QuasiPSO
+	matrix vprimes = new matrix(2, 100);
+
+	vector bprimes = calcs.bprimes(5); // since i only use 20 points for the swarms, i have found that up untill ~ 5th prime yields good distributions
+
+	var rnd = new Random();
+	for(int k = 0; k <100; k++){ // There is currently only 25 unique Halton sequences since we have "2 choose 5" above
+		xprimes[0,k] = bprimes[rnd.Next(5)]; vprimes[0,k] = bprimes[rnd.Next(5)]; 
+		xprimes[1,k] = xprimes[0,k]; vprimes[1,k] = vprimes[0,k];
+
+		while(xprimes[0,k] == xprimes[1,k]) xprimes[1,k] = bprimes[rnd.Next(5)];
+		while(vprimes[0,k] == vprimes[1,k]) vprimes[1,k] = bprimes[rnd.Next(5)];
+	}
+	//// C
+
+
+	for(int i = 0; i <100; i++){
+		var t1 = optimization.PSO(r, ra, rb, G1, Mp1, 20, 100, 0.01);
+		var t2 = optimization.BBPSO(r, ra, rb, G2, Mp2, 20, 100, 0.01);
+		var t3 = optimization.QuasiPSO(r, ra, rb, xprimes[i], vprimes[i], G3, Mp3, 20, 100, 0.01);
+		count1[i+1] = t1.Item2 + count1[i]; count2[i+1] = t2.Item2 + count2[i];
+		count3[i+1] = t3.Item2 + count3[i];
+	}
+
+	matrix S1 = new matrix(100,100); // 100 routine itterations of maximum 100 PSO itterations
+	matrix S2 = new matrix(100,100); 
+	matrix S3 = new matrix(100,100);
+
+	for(int j = 0; j< 100; j++){ // we have 100 different routine instances
+		
+		for(int i = (int)count1[j]; i< (int)count1[j+1]; i++){ // Each routine has a number of matrices and integers up untill convergence
+
+			matrix p1 = Mp1[i]; int g1 = G1[i];
+			matrix p2 = Mp2[i]; int g2 = G2[i];
+			matrix p3 = Mp3[i]; int g3 = G3[i];
+			
+			S1[i,j] = 0; S2[i,j] = 0; S3[i,j] = 0;
+	
+			for(int k = 0; k<20; k++){ // opening a matrix and finding the average distance to the current global best
+
+				S1[i,j] += (p1[k] - p1[g1]).norm();
+				S2[i,j] += (p2[k] - p2[g2]).norm();
+				S3[i,j] += (p3[k] - p3[g3]).norm();
+
+			}
+			// S1[i,j] /= 20; S2[i,j] /= 20; S3[i,j] /= 20; 
+		
+		}
+
+	}
+
+	// Taking the average of the coloum vectors in S:
+
+	vector Average1 = new vector(100);
+	vector Average2 = new vector(100);
+	vector Average3 = new vector(100);
+
+	for(int i = 0; i <100; i++){
+	
+		Average1 += S1[i];
+		Average2 += S2[i];
+		Average3 += S3[i];
+		
+
+	}
+	Average1 /= (100*20); // the 20 comes from the fact that we had 20 particles in the swarm
+	Average2 /= (100*20);
+	Average3 /= (100*20);
+	
+	
+	////// B
+
+	////// C
+
+	// The QuasiPSO has been added to the structure in B
+
+	////// C
+
+	int Bool = 0; // do we want to rewrite data?
+	if( outfile != null && Bool == 1 ){ // if we have an outfile --> stream data into it
+
+		var outstream=new System.IO.StreamWriter(outfile,append:false); // opens outstream
+
+		//// A
+		for(int j = 0; j <= 100; j++){
+			outstream.WriteLine($"{j} {LinFun(j)} {ConvergenceA1[j]} {LinFun2(j)} {ConvergenceA2[j]}");
+		}
+		//// A
+
+		outstream.WriteLine(); outstream.WriteLine(); // spacing
+
+		//// B + C
+		for(int j = 0; j < 100; j++){ 
+			
+			outstream.WriteLine($"{j+1} {S1[j,0]} {S2[j,0]} {S3[j,0]} {Average1[j]} {Average2[j]} {Average3[j]}");
+
+		}
+		//// B + C
+
+		outstream.Close(); // Important
+
+	}
+
+	// Opens outstream for plots
+
+	string text = File.ReadAllText(@"Exam.txt");
+
+	// The two strings are concatenated and put in the presented order
+	string[] Results = new string[16];
+	for(int j = 0; j<2; j++){
+		for(int i = 0; i <4; i++){
+			Results[i + j*8] = hstring[i];
+			Results[i + 4 + j*8] = rstring[i];
+		}
+	}
+
+
+
+
+___________________________________
+
+
+	for(int j = 0; j< Inst; j++){ // we have 100 different routine instances
+		
+		int c1 = 0;
+		int c2 = 0;
+		int c3 = 0;
+
+		for(int i = (int)count1[j]; i< (int)count1[j+1]; i++){ // Each routine has a number of matrices and integers up untill convergence
+
+			
+
+			matrix p1 = Mp1[i]; int g1 = G1[i];
+			S1[c1,j] = 0;
+	
+			for(int k = 0; k < N_new; k++){ // opening a matrix and finding the average distance to the current global best
+				S1[c1,j] += (p1[k] - p1[g1]).norm();
+			}
+			c1 += 1;
+		
+		}
+		for(int i = (int)count2[j]; i< (int)count2[j+1]; i++){ 
+
+			matrix p2 = Mp2[i]; int g2 = G2[i];
+			S2[c2,j] = 0;
+	
+			for(int k = 0; k < N_new; k++){ 
+				S2[c2,j] += (p2[k] - p2[g2]).norm();
+			}
+			c2 += 1;
+		
+		}
+		for(int i = (int)count3[j]; i< (int)count3[j+1]; i++){
+
+			matrix p3 = Mp3[i]; int g3 = G3[i];
+			S3[c3,j] = 0;
+	
+			for(int k = 0; k < N_new; k++){ // opening a matrix and finding the average distance to the current global best
+				S3[c3,j] += (p3[k] - p3[g3]).norm();
+			}
+			c3 += 1;
+		}
+
+	}
+
+	// Taking the average of the coloum vectors in S:
+
+	vector Average1 = new vector(N_new);
+	vector Average2 = new vector(N_new);
+	vector Average3 = new vector(N_new);
+
+	for(int i = 0; i <Inst; i++){
+	
+		Average1 += S1[i];
+		Average2 += S2[i];
+		Average3 += S3[i];
+		
+
+	}
+	Average1 /= (100*20); // the 20 comes from the fact that we had 20 particles in the swarm
+	Average2 /= (100*20);
+	Average3 /= (100*20);
+	
+	
+	////// B
+
+	////// C
+
+	// The QuasiPSO has been added to the structure in B
+
+	////// C
+
+
+----------------------------------------------
+
+for(int j = 0; j< Inst; j++){ // we have 100 different routine instances
+		
+		int c1 = 0;
+		int c2 = 0;
+		int c3 = 0;
+
+		for(int i = (int)count1[j]; i< (int)count1[j+1]; i++){ // Each routine has a number of matrices and integers up untill convergence
+
+			
+
+			matrix p1 = Mp1[i]; int g1 = G1[i];
+			S1[c1,j] = 0;
+	
+			for(int k = 0; k < N_new; k++){ // opening a matrix and finding the average distance to the current global best
+				S1[c1,j] += (p1[k] - p1[g1]).norm();
+			}
+			c1 += 1;
+		
+		}
+		for(int i = (int)count2[j]; i< (int)count2[j+1]; i++){ 
+
+			matrix p2 = Mp2[i]; int g2 = G2[i];
+			S2[c2,j] = 0;
+	
+			for(int k = 0; k < N_new; k++){ 
+				S2[c2,j] += (p2[k] - p2[g2]).norm();
+			}
+			c2 += 1;
+		
+		}
+		for(int i = (int)count3[j]; i< (int)count3[j+1]; i++){
+
+			matrix p3 = Mp3[i]; int g3 = G3[i];
+			S3[c3,j] = 0;
+	
+			for(int k = 0; k < N_new; k++){ // opening a matrix and finding the average distance to the current global best
+				S3[c3,j] += (p3[k] - p3[g3]).norm();
+			}
+			c3 += 1;
+		}
+
+	}
+
+.---------------------------
+
+for(int j = 0; j< Inst; j++){ // we have 100 different routine instances (we want those to be coloums of the S matrices )
+
+		for(int i = 0; i< count1[j]; i++){ // Each routine has a number of matrices and integers up untill convergence
+
+			matrix p1 = (Mp1[j])[i]; int g1 = (G1[j])[i];
+			S1[i,j] = 0;
+	
+			for(int k = 0; k < N_new; k++){ // opening the i'th matrix and finding the average distance to the i'th global best
+				S1[i,j] += (p1[k] - p1[g1]).norm();
+			}
+		
+		}
+
+		for(int i = 0; i< count2[j]; i++){ 
+
+			matrix p2 = (Mp2[j])[i]; int g2 = (G2[j])[i];
+			S2[i,j] = 0;
+	
+			for(int k = 0; k < N_new; k++){ 
+				S2[i,j] += (p2[k] - p2[g2]).norm();
+			}
+		
+		}
+		for(int i = 0; i< count3[j]; i++){
+
+			matrix p3 = (Mp3[j])[i]; int g3 = (G3[j])[i];
+			S3[i,j] = 0;
+	
+			for(int k = 0; k < N_new; k++){ // opening a matrix and finding the average distance to the current global best
+				S3[i,j] += (p3[k] - p3[g3]).norm();
+			}
+		}
+
+	}
+
+	// Taking the average of the coloum vectors in S:
+
+	vector Average1 = new vector(N_new);
+	vector Average2 = new vector(N_new);
+	vector Average3 = new vector(N_new);
+
+	for(int i = 0; i <Inst; i++){
+	
+		Average1 += S1[i];
+		Average2 += S2[i];
+		Average3 += S3[i];
+		
+
+	}
+	Average1 /= (Inst*N_new); S1 /= N_new; // the 20 comes from the fact that we had 20 particles in the swarm
+	Average2 /= (Inst*N_new); S2 /= N_new;
+	Average3 /= (Inst*N_new); S3 /= N_new;
+	
+	
+	////// B
+
+	////// C
+
+	// The QuasiPSO has been added to the structure in B
+
+	////// C
+
+---------------------------------------
+
+	for(int j = 0; j< Inst; j++){ // we have 100 different routine instances (we want those to be coloums of the S matrices )
+
+		for(int i = 0; i< count1[j]; i++){ // Each routine has a number of matrices and integers up untill convergence
+
+			matrix p1 = (Mp1[j])[i]; int g1 = (G1[j])[i];
+			S1[i,j] = 0;
+	
+			for(int k = 0; k < N_new; k++){ // opening the i'th matrix and finding the average distance to the i'th global best
+				S1[i,j] += (p1[k] - p1[g1]).norm();
+			}
+		
+		}
+
+		for(int i = 0; i< count2[j]; i++){ 
+
+			matrix p2 = (Mp2[j])[i]; int g2 = (G2[j])[i];
+			S2[i,j] = 0;
+	
+			for(int k = 0; k < N_new; k++){ 
+				S2[i,j] += (p2[k] - p2[g2]).norm();
+			}
+		
+		}
+		for(int i = 0; i< count3[j]; i++){
+
+			matrix p3 = (Mp3[j])[i]; int g3 = (G3[j])[i];
+			S3[i,j] = 0;
+	
+			for(int k = 0; k < N_new; k++){ // opening a matrix and finding the average distance to the current global best
+				S3[i,j] += (p3[k] - p3[g3]).norm();
+			}
+		}
+
+	}
+
+	// Taking the average of the coloum vectors in S:
+
+	vector Average1 = new vector(N_new);
+	vector Average2 = new vector(N_new);
+	vector Average3 = new vector(N_new);
+
+	for(int i = 0; i <Inst; i++){
+	
+		Average1 += S1[i];
+		Average2 += S2[i];
+		Average3 += S3[i];
+		
+
+	}
+	Average1 /= (Inst*N_new); S1 /= N_new; // the 20 comes from the fact that we had 20 particles in the swarm
+	Average2 /= (Inst*N_new); S2 /= N_new;
+	Average3 /= (Inst*N_new); S3 /= N_new;
+	
+	
+	////// B

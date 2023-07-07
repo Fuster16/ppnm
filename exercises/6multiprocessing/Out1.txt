@@ -1,0 +1,4 @@
+13.8407348735944 with Parallel.For
+real 0.48
+user 3.44
+sys 0.01

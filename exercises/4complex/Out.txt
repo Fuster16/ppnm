@@ -1,0 +1,13 @@
+
+Exercise complex 
+4.Calculate sqrt(-1),sqrt(i), e^i,e^(i*pi), i^i, ln(i) and sin(i*pi)
+
+The calculations are found to yield:
+sqrt(-1) = 6.12e-17+-1i and should be equal to i
+sqrt(i) = 0.707+0.707i and should be equal to e^(0.5*ln(i)) = e^(i*pi/4) = cos(pi/4) + i*sin(pi/4) = (1 + i)/sqrt(2)
+e^i = 0.54+0.841i and should be equal to cos(1) + i*sin(1) = 0.54 + i*0.84
+e^(pi*i) = -1+1.22e-16i and should be equal to cos(pi) + i*sin(pi) = -1 + 0i
+i^i = 0.208+0i should be equal to e^(i*ln(i)) = e^(-pi/2) = 0.208
+ln(i) = 0+1.57i and should be equal to ln(e^(ipi/2)) = ipi/2 = i*1.57
+sin(i*pi) = 0+11.5i and should be equal to (exp(i*i*pi)-exp(-i*i*pi))/2/i = i(-1)*(e^(-pi) - e^(pi))/2
+(-1)*(e^(-pi) - e^(pi))/2 is found from Math on doubles to yield 11.5487393572577

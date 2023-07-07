@@ -1,0 +1,59 @@
+Excercise "math"
+
+Objectives:
+
+- Learn how to do simple math with C#
+- Learn how to separately compile a function into a library and then link it to your Main function.
+
+Tasks
+
+1. Calculate (using System.Math class) (2)^0.5, 2^(1/5), e^pi and pi^e. Check that the 
+results are correct.
+
+The above requested calculations have been found using the built-in Math class:
+
+sqrt2 is 1.4142135623731 using Math.Sqrt()
+2^(1/5) is 1.14869835499704 using Math.Pow(2,0.2)
+e^(pi) is 23.1406926327793 using Math.Exp(Math.PI)
+pi^(e) is 22.459157718361 using Math.Pow(Math.PI,Math.E)
+
+The above values are checked by application of inverse operations, also from .Math:
+
+sqrt2^2 is 2 by multiplication with itself
+(2^(1/5))^5 is 2 using Math.Pow(Math.Pow(2,0.2),5)
+ln(e^(pi)) is 3.14159265358979 using Math.Log(Math.Exp(Math.PI))
+(pi^(e))^(1/e) is 3.14159265358979 using Math.Pow(Math.Pow(Math.PI,Math.E), 1/Math.E)
+
+2. Using the given stirling approximation for the gamma-function Γ(x), calculate Γ(1), Γ(2)
+Γ(3) and Γ(10). Check that the results are correct.
+
+The given stirling approximation have been implemented and the following results are obtained:
+
+Γ(1) = 0.999999989064903 should be equal to 1
+Γ(2) = 0.999999989064903 should be equal to 1
+Γ(3) = 1.99999997812981 should be equal to 2
+Γ(10) = 362879.997652016 should be equal to 9! = 362880
+
+I find that these correspond well to theory by the formula Γ(n) = (n-1)!
+
+3. The gamma-function overflows very easily, so the logarithm of the gamma function, lngamma,
+is often a more useful function. Figure out how to modify the above formula to calculate 
+lngamma. For simplicity you should only allow positive arguments for your lngamma.
+
+This have been implemented as the method "lngamma" in the "sfuns.cs" file.
+
+Calculation with the lngamma method yields:
+
+Log(Γ(1)) = -1.09350976051914E-08 should be equal to 0
+Log(Γ(2)) = -1.09350976051914E-08 should be equal to 0
+Log(Γ(3)) = 0.693147169624848 should be equal to ln(2)
+Log(Γ(10)) = 12.8018274736111 should be equal to ln(9!)
+
+By exponentiating with e we find the same results from Task 2:
+
+Exp(Log(Γ(1))) = Γ(1) = 0.999999989064903 should be equal to 1
+Exp(Log(Γ(1))) = Γ(2) = 0.999999989064903 should be equal to 1
+Exp(Log(Γ(1))) = Γ(3) = 1.9999999781298 should be equal to 2
+Exp(Log(Γ(10))) = Γ(10) = 362879.997652016 should be equal to 362880
+
+The method thus works as intended.

@@ -1,0 +1,83 @@
+
+Since there isn't a lot to go after for this examination description, i'm giving myself some
+assignments:
+
+
+A. (6 points) Particle Swarm Optimization (PSO)
+
+
+
+A.1 
+Implement the PSO routine.
+
+This i have done. The implementation can be found in the file "optimize.cs" under "PSO".
+
+
+
+
+A.2
+Debug your routine on certain functions: 
+The Himmelblau's function: h(x,y)=(x^2+y-11)^2+(x+y^2-7)^2
+The Rosenbrock's valley function: r(x,y)=(1-x)^2+100(y-x^2)^2
+
+Record the number of steps it takes for the algorithm to converge with damping parameter
+w = 72. Also. Examine the convergence time as a function of the damping parameter, w.
+
+The routine has been run several times for the above functions in regions of suspected 
+minima, and yields:
+
+{0}	and	{1}
+
+{2}	and	{3}
+
+And the Rosenbrock functions:
+
+{4}	and	{5}
+
+{6}	and	{7}
+
+The relation between convergence time and damping parameter has been made on the Rosenbrock
+due to it only having 1 minima. This can be found as "Conv_Damp_relation.svg".
+However, this plot isn't very indicitive (partly due to my convergence criteria i think) and
+in B i will thus try to record the average distance from the particles to the global best at
+each step!
+
+
+
+
+B. (3 points) 
+Implement the "Bare Bones" PSO routine and compare the convergence time to the standard PSO
+on the same functions as in A. Here it might be a good idea to implement generic lists in 
+order to record the PSO routine.
+
+The BBPSO routine has been run several times for the above functions in regions of suspected 
+minima, and yields:
+
+{8}	and	{9}
+
+{10}	and	{11}
+
+And the Rosenbrock functions:
+
+{12}	and	{13}
+
+{14}	and	{15}
+
+In the figure "Conv_time_comparison.svg" the PSO and BBPSO can be found compared for the
+Rosenbrock function. The figure represents the average distance the particles have to the 
+(at the time) global best position. Another figure, "Conv_time_comparison100.svg", then 
+makes comparison by averaging over 100 routine instances.
+
+
+
+
+C. (1 point)
+Here i have decided to modify the PSO such that the initial velocities and positions are 
+quasi-random. Add the QuasiPSO to the Comparison figures from B.
+The figures "Conv_time_comparison.svg" and "Conv_time_comparison100.svg" have been updated.
+
+At a last moments notice i thought to animate the PSO, however this failed. 
+I then tried to make some "Before.svg" and "After.svg" images of one of the routine instances. 
+These can be found in the folder. However, nothing has changed? And i dont known why. I have
+looked through my code hours on end and cannot find where it goes wrong. All of the above
+results must be due to taking the best random sampling then.

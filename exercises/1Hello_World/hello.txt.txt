@@ -1,0 +1,6 @@
+Exercise "Hello, World"
+
+Install csharp-mono at your system and build a "Hello, World" program
+
+This i have done by running the suggested commands. The Makefile and "hello.cs" file can be
+found in this folder (debugged and ready to make)
